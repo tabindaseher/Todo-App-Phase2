@@ -3,7 +3,7 @@ import { getToken, getRefreshToken, removeTokens } from '../utils/auth';
 
 // Create axios instance with base configuration
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api',
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -39,7 +39,7 @@ apiClient.interceptors.response.use(
       const refreshToken = getRefreshToken();
       if (refreshToken) {
         try {
-          const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api'}/auth/refresh`, {
+          const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'}/api/auth/refresh`, {
             refresh_token: refreshToken
           });
 
@@ -75,35 +75,35 @@ export default apiClient;
 // Export specific API functions for authentication
 export const authApi = {
   login: (email: string, password: string) =>
-    apiClient.post('/auth/login', { email, password }),
+    apiClient.post('/api/auth/login', { email, password }),
 
   register: (name: string, email: string, password: string) =>
-    apiClient.post('/auth/register', { name, email, password }),
+    apiClient.post('/api/auth/register', { name, email, password }),
 
   logout: () =>
-    apiClient.post('/auth/logout'),
+    apiClient.post('/api/auth/logout'),
 
   refreshToken: (refreshToken: string) =>
-    apiClient.post('/auth/refresh', { refreshToken }),
+    apiClient.post('/api/auth/refresh', { refreshToken }),
 };
 
 // Export specific API functions for todos
 export const todosApi = {
   getAll: (params?: { status?: string; priority?: string; limit?: number; offset?: number }) =>
-    apiClient.get('/todos', { params }),
+    apiClient.get('/api/todos', { params }),
 
   getById: (id: string) =>
-    apiClient.get(`/todos/${id}`),
+    apiClient.get(`/api/todos/${id}`),
 
   create: (data: { title: string; description?: string; dueDate?: string; priority?: string }) =>
-    apiClient.post('/todos', data),
+    apiClient.post('/api/todos', data),
 
   update: (id: string, data: { title?: string; description?: string; completed?: boolean; dueDate?: string; priority?: string }) =>
-    apiClient.put(`/todos/${id}`, data),
+    apiClient.put(`/api/todos/${id}`, data),
 
   delete: (id: string) =>
-    apiClient.delete(`/todos/${id}`),
+    apiClient.delete(`/api/todos/${id}`),
 
   toggleComplete: (id: string, completed: boolean) =>
-    apiClient.patch(`/todos/${id}/complete`, { completed }),
+    apiClient.patch(`/api/todos/${id}/complete`, { completed }),
 };

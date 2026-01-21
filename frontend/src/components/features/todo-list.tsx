@@ -82,32 +82,58 @@ const TodoList: React.FC<TodoListProps> = ({ todos, onCreateTodo, onRefresh }) =
   return (
     <div className="space-y-6">
       {error && (
-        <div className="rounded-md bg-red-50 p-4">
-          <div className="text-sm text-red-700">{error}</div>
+        <div className="rounded-lg bg-red-50 p-4 border border-red-200">
+          <div className="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-400 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            </svg>
+            <span className="text-sm text-red-700">{error}</span>
+          </div>
         </div>
       )}
 
-      {/* Controls */}
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-        <div className="flex space-x-2">
-          <select
-            value={filter}
-            onChange={(e) => setFilter(e.target.value as 'all' | 'active' | 'completed')}
-            className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-          >
-            <option value="all">All Todos</option>
-            <option value="active">Active</option>
-            <option value="completed">Completed</option>
-          </select>
+      {/* Stats and Controls */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div className="flex flex-wrap gap-4">
+            <div className="bg-blue-50 rounded-lg px-4 py-3 border border-blue-100">
+              <div className="text-sm text-blue-600 font-medium">Total Tasks</div>
+              <div className="text-2xl font-bold text-blue-900">{Array.isArray(todos) ? todos.length : 0}</div>
+            </div>
+            <div className="bg-green-50 rounded-lg px-4 py-3 border border-green-100">
+              <div className="text-sm text-green-600 font-medium">Completed</div>
+              <div className="text-2xl font-bold text-green-900">
+                {Array.isArray(todos) ? todos.filter(t => t && t.completed).length : 0}
+              </div>
+            </div>
+            <div className="bg-yellow-50 rounded-lg px-4 py-3 border border-yellow-100">
+              <div className="text-sm text-yellow-600 font-medium">Pending</div>
+              <div className="text-2xl font-bold text-yellow-900">
+                {Array.isArray(todos) ? todos.filter(t => t && !t.completed).length : 0}
+              </div>
+            </div>
+          </div>
 
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as 'date' | 'priority')}
-            className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-          >
-            <option value="date">Sort by Date</option>
-            <option value="priority">Sort by Priority</option>
-          </select>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <select
+              value={filter}
+              onChange={(e) => setFilter(e.target.value as 'all' | 'active' | 'completed')}
+              className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition appearance-none bg-white min-w-[160px]"
+            >
+              <option value="all">All Tasks</option>
+              <option value="active">Active</option>
+              <option value="completed">Completed</option>
+            </select>
+
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as 'date' | 'priority')}
+              className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition appearance-none bg-white min-w-[160px]"
+            >
+              <option value="date">Sort by Date</option>
+              <option value="priority">Sort by Priority</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -117,36 +143,84 @@ const TodoList: React.FC<TodoListProps> = ({ todos, onCreateTodo, onRefresh }) =
       {/* Todo List */}
       <div className="space-y-4">
         {sortedTodos.length === 0 ? (
-          <div className="text-center py-12">
-            <svg
-              className="mx-auto h-12 w-12 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                vectorEffect="non-scaling-stroke"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-              />
-            </svg>
-            <h3 className="mt-2 text-sm font-medium text-gray-900">No todos</h3>
-            <p className="mt-1 text-sm text-gray-500">Get started by creating a new todo.</p>
+          <div className="text-center py-16">
+            <div className="mx-auto w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center mb-6">
+              <svg
+                className="w-12 h-12 text-gray-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  vectorEffect="non-scaling-stroke"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                />
+              </svg>
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">No tasks found</h3>
+            <p className="text-gray-500 max-w-md mx-auto">
+              {filter === 'completed'
+                ? "You haven't completed any tasks yet. Keep going!"
+                : filter === 'active'
+                ? "Great job! You've completed all your active tasks."
+                : "Get started by creating your first task."}
+            </p>
           </div>
         ) : (
-          sortedTodos.map(todo => (
-            <TodoItemComponent
-              key={todo.id}
-              todo={todo}
-              onToggleCompletion={handleToggleCompletion}
-              onDelete={handleDeleteTodo}
-              onUpdate={handleUpdateTodo}
-              isLoading={loadingStates[todo.id]}
-            />
-          ))
+          <div className="space-y-3">
+            <div className="text-sm text-gray-500">
+              Showing {Array.isArray(sortedTodos) ? sortedTodos.length : 0} of {Array.isArray(filteredTodos) ? filteredTodos.length : 0} task{(Array.isArray(filteredTodos) ? filteredTodos.length : 0) !== 1 ? 's' : ''}
+            </div>
+            {Array.isArray(sortedTodos) && sortedTodos.length > 0 ? (
+              sortedTodos.map(todo => (
+                <div
+                  className="animate-fadeIn"
+                  style={{ animationDelay: `${Math.random() * 0.2}s` }}
+                >
+                  <TodoItemComponent
+                    key={todo.id}
+                    todo={todo}
+                    onToggleCompletion={handleToggleCompletion}
+                    onDelete={handleDeleteTodo}
+                    onUpdate={handleUpdateTodo}
+                    isLoading={loadingStates[todo.id]}
+                  />
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-16">
+                <div className="mx-auto w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center mb-6">
+                  <svg
+                    className="w-12 h-12 text-gray-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      vectorEffect="non-scaling-stroke"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">No tasks found</h3>
+                <p className="text-gray-500 max-w-md mx-auto">
+                  {filter === 'completed'
+                    ? "You haven't completed any tasks yet. Keep going!"
+                    : filter === 'active'
+                    ? "Great job! You've completed all your active tasks."
+                    : "Get started by creating your first task."}
+                </p>
+              </div>
+            )}
+          </div>
         )}
       </div>
     </div>

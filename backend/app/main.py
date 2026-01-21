@@ -43,6 +43,12 @@ app.add_middleware(
 # Include API routes
 app.include_router(api_router, prefix="/api")
 
+@app.get("/")
+async def root():
+    """Root endpoint to verify backend is running"""
+    return {"message": "Backend is running!"}
+
+
 @app.get("/health")
 async def health_check():
     """Health check endpoint to verify API availability"""

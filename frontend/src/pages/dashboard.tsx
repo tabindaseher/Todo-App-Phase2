@@ -22,12 +22,17 @@ const DashboardPage: React.FC = () => {
       setLoading(true);
       setError(null);
       const response = await getTodos();
+
+      // Safely handle response with fallback for undefined/empty data
+      let todosFromResponse = response?.todos || [];
+
       // Normalize todos to ensure they match the expected interface
-      const normalizedTodos = response.todos.map(todo => ({
+      const normalizedTodos = todosFromResponse.map(todo => ({
         ...todo,
-        id: String(todo.id), // Ensure id is string
-        priority: todo.priority || 'medium', // Ensure priority has a default
+        id: String(todo?.id || Math.random().toString()), // Ensure id is string with fallback
+        priority: todo?.priority || 'medium', // Ensure priority has a default
       }));
+
       setTodos(normalizedTodos);
     } catch (err) {
       console.error('Error loading todos:', err);
